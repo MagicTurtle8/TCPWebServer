@@ -13,18 +13,17 @@ back to the client
 from socket import * #import socket module
 import sys # In order to terminate the program
 
-serverSocket = socket(AF_INET, SOCK_STREAM) #Create a server socket
-
+serverSocket = socket(AF_INET, SOCK_STREAM) # Create a server socket
 #Prepare a server socket
 serverPort = 13000
-serverSocket.bind(('', 13000))
+serverSocket.bind(('', serverPort))
 serverSocket.listen(1)
 
 while True:
     # Establish the connection
     print('Ready to serve...')
-    connectionSocket, address = serverSocket.accept()
-
+    connectionSocket, address = serverSocket.accept() # Called when client knocks
+    print('address:', address)
     try:
         # Open and read the requested html file
         message = connectionSocket.recv(1024)
@@ -40,14 +39,15 @@ while True:
             connectionSocket.send(outputData[i].encode())
         connectionSocket.send("\r\n".encode())
 
-        connectionSocket.close() # Close client socket
+        connectionSocket.close() # Close connection socket
 
     except IOError:
         # Send response message for file not found
-        connectionSocket.send('HTTP/1.1 404 Not Found\n\n')
-        print('404 not found')
+        connectionSocket.send("HTTP/1.1 404 Not Found\r\n\r\n")
+        connectionSocket.send("<html><head></head><title>404 not found</title><body><h1>404 Not Found</h1></body></html>\r\n")
+        print('404 Not Found')
 
-        connectionSocket.close() # Close client socket
+        connectionSocket.close() # Close connection socket
 
-    serverSocket.close() # Close server socket
+    serverSocket.close() # Close server initial socket
     sys.exit() # Terminate the program after sending the corresponding data
