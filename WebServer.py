@@ -33,6 +33,7 @@ while True:
 
         # Send one HTTP header line into socket
         connectionSocket.send('HTTP/1.1 200 OK\r\n\r\n')
+        print('200 OK')
 
         # Send the content of the requested file to the client
         for i in range(0, len(outputData)):
